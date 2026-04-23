@@ -1,0 +1,18 @@
+/* Override AdminLTE logo sidebar */
+.brand-link .brand-image-xl.logo-xl {
+    max-height: 55px !important;
+    width: 150px !important;
+    opacity: 1 !important;
+}
+
+.brand-link .brand-image.logo-xs {
+    max-height: none !important;
+    height: 35px !important;
+    width: auto !important;
+}
+
+.brand-link {
+    padding: 10px 15px !important;
+    display: flex !important;
+    align-items: center !important;
+}
