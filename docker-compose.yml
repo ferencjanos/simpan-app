@@ -1,0 +1,67 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: simpan-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - simpan-network
+    depends_on:
+      - db
+
+  webserver:
+    image: nginx:alpine
+    container_name: simpan-nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - simpan-network
+    depends_on:
+      - app
+
+  db:
+    image: mysql:8.0
+    container_name: simpan-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: admin_lte
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_USER: simpan_user
+      MYSQL_PASSWORD: simpan_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - simpan-db-data:/var/lib/mysql
+    networks:
+      - simpan-network
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: simpan-phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: root_password
+    ports:
+      - "8080:80"
+    networks:
+      - simpan-network
+    depends_on:
+      - db
+
+networks:
+  simpan-network:
+    driver: bridge
+
+volumes:
+  simpan-db-data:
+    driver: local
